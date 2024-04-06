@@ -24,15 +24,7 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore
-    - name: List
-      run: ls
-    - name: List ../
-      run: ls ../
-    - name: List ../../
-      run: ls ../../
-    - name: List ../../../
-      run: ls ../../../
     - name: Test
       run: dotnet test --no-build --verbosity normal
     - name: Run Generator on Sample
-      run: dotnet run --project CDMGenerator CDMGeneratorTests\sample-data\default.manifest.cdm.json
+      run: dotnet run --project CDMGenerator ./CDMGeneratorTests/sample-data/default.manifest.cdm.json
