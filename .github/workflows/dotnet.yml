@@ -27,4 +27,4 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal
     - name: Run Generator on Sample
-      run: dotnet run --project CDMGenerator ./CDMGeneratorTests/sample-data/default.manifest.cdm.json
+      run: dotnet run --project CDMGenerator --manifest ./CDMGeneratorTests/sample-data/sample.manifest.cdm.json --outputDirectory generatedOutput

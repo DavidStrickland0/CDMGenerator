@@ -48,7 +48,6 @@ namespace CDMGeneratorTests
             string fullPath = Path.GetFullPath(filePath);
             if (!File.Exists(fullPath)) filePath = Path.GetFullPath("../../../../CDMGeneratorTests/sample-data/default.manifest.cdm.json");
             await ObjectUnderTest.Generate(filePath);
-
         }
 
     }

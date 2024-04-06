@@ -13,7 +13,9 @@ namespace CDMGenerator
     {
         private Action<string> pocoHandler;
 
-        public ModelGenerator(Action<string> pocoHandler) { this.pocoHandler = pocoHandler; }
+        public ModelGenerator(Action<string> pocoHandler) { 
+            this.pocoHandler = pocoHandler; 
+        }
 
         public async Task Generate(string schemaRootPath)
         {
@@ -34,7 +36,6 @@ namespace CDMGenerator
             // Storage adapter pointing to the target local manifest location. 
             cdmCorpus.Storage.Mount("local", new LocalAdapter(Path.GetDirectoryName(schemaRootPath)));
             cdmCorpus.Storage.DefaultNamespace = "local";
-
             await processManifest(cdmCorpus, schemaRootPath);
 
         }
@@ -55,7 +56,7 @@ namespace CDMGenerator
             foreach (var entity in manifest.Entities)
             {
                 var entSelected = await cdmCorpus.FetchObjectAsync<CdmEntityDefinition>(entity.EntityPath, manifest); // gets the entity object from the doc
-                var poco = CdmToPocoGenerator.GeneratePocoClass(entSelected);
+                var poco = CdmToPocoGenerator.GeneratePocoClass(entSelected,manifest);
                 pocoHandler(poco);
             }
         }

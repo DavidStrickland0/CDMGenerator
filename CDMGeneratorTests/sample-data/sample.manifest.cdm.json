@@ -1,5 +1,6 @@
 {
-  "manifestName": "default.manifest.cdm.json",
+  "manifestName": "sample",
+  "$schema": "sample.manifest.cdm.json",
   "entities": [
     {
       "type": "LocalEntity",

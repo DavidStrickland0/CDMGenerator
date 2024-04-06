@@ -1,7 +1,8 @@
 {
   "profiles": {
     "CDMGenerator": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "commandLineArgs": "--manifest ../../../../CDMGeneratorTests/sample-data/sample.manifest.cdm.json --outputDirectory ../../../../debugOutput"
     }
   }
 }
