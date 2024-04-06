@@ -18,7 +18,7 @@ namespace CDMGenerator
         public async Task Generate(string schemaRootPath)
         {
             ArgumentNullException.ThrowIfNullOrEmpty(schemaRootPath);
-            if (!File.Exists(schemaRootPath)) throw new ArgumentException($"{schemaRootPath} does not exist");
+            if (!File.Exists(schemaRootPath)) throw new ArgumentException($"{Path.GetFullPath(schemaRootPath)} does not exist");
             string manifestPath = string.Empty;
 
             var cdmCorpus = new CdmCorpusDefinition();
