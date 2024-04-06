@@ -1,0 +1,3 @@
+[submodule "CDM"]
+	path = CDM
+	url = https://github.com/microsoft/CDM.git
