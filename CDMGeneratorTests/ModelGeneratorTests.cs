@@ -30,6 +30,10 @@ namespace CDMGeneratorTests
         public async void Generate_WithValidPathWithInvalidContents_Throws()
         {
             var ObjectUnderTest = new ModelGenerator(p => { });
+            string filePath = "..\\..\\..\\CDMGeneratorTests\\sample-data\\ModelGeneratorTests.cs";
+            // Resolve the relative path to an absolute path
+            string fullPath = Path.GetFullPath(filePath);
+            if (!File.Exists(fullPath)) filePath = Path.GetFullPath("..\\..\\..\\..\\CDMGeneratorTests\\sample-data\\ModelGeneratorTests.cs");
             await Assert.ThrowsAsync<ArgumentException>(async () => await ObjectUnderTest.Generate("..\\..\\..\\..\\CDMGeneratorTests\\sample-data\\ModelGeneratorTests.cs"));
         }
 
@@ -38,8 +42,12 @@ namespace CDMGeneratorTests
         {
             var ObjectUnderTest = new ModelGenerator(p => {
                 System.Diagnostics.Debug.WriteLine(p);
-            }); ;
-            await ObjectUnderTest.Generate("..\\..\\..\\..\\CDMGeneratorTests\\sample-data\\default.manifest.cdm.json");
+            });
+            string filePath = "..\\..\\..\\CDMGeneratorTests\\sample-data\\default.manifest.cdm.json";
+            // Resolve the relative path to an absolute path
+            string fullPath = Path.GetFullPath(filePath);
+            if (!File.Exists(fullPath)) filePath = Path.GetFullPath("..\\..\\..\\..\\CDMGeneratorTests\\sample-data\\default.manifest.cdm.json");
+            await ObjectUnderTest.Generate(filePath);
 
         }
 
