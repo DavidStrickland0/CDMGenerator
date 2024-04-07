@@ -46,7 +46,7 @@ namespace CDMGeneratorTests
             string filePath = "../../../CDMGeneratorTests/sample-data/default.manifest.cdm.json";
             // Resolve the relative path to an absolute path
             string fullPath = Path.GetFullPath(filePath);
-            if (!File.Exists(fullPath)) filePath = Path.GetFullPath("../../../../CDMGeneratorTests/sample-data/default.manifest.cdm.json");
+            if (!File.Exists(fullPath)) filePath = Path.GetFullPath("../../../../CDMGeneratorTests/sample-data/sample.manifest.cdm.json");
             await ObjectUnderTest.Generate(filePath);
         }
 

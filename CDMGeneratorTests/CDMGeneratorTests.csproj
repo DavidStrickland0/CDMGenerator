@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CDMGenerator\CDMGenerator.csproj" />
+    <ProjectReference Include="../CDMGenerator\CDMGenerator.csproj" />
   </ItemGroup>
 
   <ItemGroup>
