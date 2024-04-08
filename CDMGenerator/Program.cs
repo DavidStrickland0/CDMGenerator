@@ -54,10 +54,7 @@ void ExecuteHandler(string schemaRoot,string manifest, string outputDirectory)
 }
 
 // Set the handler for the command
-rootCommand.SetHandler((string schemaRoot, string manifest, string outputDirectory) =>
-{
-    ExecuteHandler(schemaRoot,manifest, outputDirectory);
-},schemaRootDirectory, rootManifestPath, outputDirectoryOption);
+rootCommand.SetHandler(ExecuteHandler,schemaRootDirectory, rootManifestPath, outputDirectoryOption);
 
 // Execute the command
 return await rootCommand.InvokeAsync(args);

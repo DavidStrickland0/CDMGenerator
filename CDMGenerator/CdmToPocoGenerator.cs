@@ -13,7 +13,6 @@
         {
             List<MemberDeclarationSyntax> properties = new List<MemberDeclarationSyntax>();
 
-            // Assuming GenerateProperty is adjusted to return MemberDeclarationSyntax
             foreach (var attr in cdmEntity.Attributes)
             {
                 if (attr is CdmTypeAttributeDefinition typeAttr)
@@ -36,23 +35,20 @@
                 }
             }
 
-            // Prepare XML comment based on entity description
             string comment = $"/// <summary>\n/// {cdmEntity.Description ?? "No description available."}\n/// </summary>\n";
 
-            // Create class declaration with properties
             var classDeclaration = SyntaxFactory.ClassDeclaration(cdmEntity.EntityName)
                 .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
                 .AddMembers(properties.ToArray())
                 .WithLeadingTrivia(SyntaxFactory.ParseLeadingTrivia(comment));
 
-            // Sanitize ManifestName to create a valid namespace name
-            string sanitizedNamespace = SanitizeNamespace(manifest.ManifestName);
+            // Assuming GetManifestFullPath is a method to get the full path of the manifest
+            string manifestFullPath = ExtractFullPathFromEntity(cdmEntity);
+            string sanitizedNamespace = SanitizeFullPathAsNamespace(manifestFullPath);
 
-            // Create namespace declaration using the sanitized name
             var namespaceDeclaration = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName(sanitizedNamespace))
                 .AddMembers(classDeclaration);
 
-            // Create the compilation unit (the complete syntax tree)
             var syntaxTree = SyntaxFactory.CompilationUnit()
                 .AddUsings(SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("System")))
                 .AddMembers(namespaceDeclaration)
@@ -61,12 +57,33 @@
             return syntaxTree.ToFullString();
         }
 
-        private static string SanitizeNamespace(string namespaceName)
+        private static string ExtractFullPathFromEntity(CdmEntityDefinition cdmEntity)
         {
-            // Replace spaces with underscores and remove other invalid characters as needed
-            return string.Concat(namespaceName.Where(char.IsLetterOrDigit)).Replace(' ', '_');
+            var document = cdmEntity.InDocument;
+            var folder = document.Owner as CdmFolderDefinition;
+            var folders = new List<string>();
+            while (folder != null)
+            {
+                if (!string.IsNullOrEmpty(folder.Name))
+                {
+                    folders.Add(folder.Name);
+                }
+                folder = folder.Owner as CdmFolderDefinition;
+            }
+            folders.Reverse();
+            return string.Join("/", folders);
         }
 
+        private static string SanitizeFullPathAsNamespace(string fullPath)
+        {
+            // Replace directory separators and invalid characters with valid namespace parts
+            return fullPath
+                .Replace("\\", ".") // For Windows paths
+                .Replace("/", ".")  // For UNIX/Linux paths
+                .Replace(" ", "_")  // Replace spaces with underscores
+                                    // Add more replacements as necessary
+                .Trim('.');
+        }
 
 
         private static MemberDeclarationSyntax GenerateProperty(CdmTypeAttributeDefinition attr)
@@ -100,6 +117,9 @@
                 "int" => true,
                 "string" => true,
                 "namespace" => true,
+                "abstract"=>true,
+                "default" => true,
+                "event" => true,
                 // Add other keywords as necessary
                 _ => false,
             };
