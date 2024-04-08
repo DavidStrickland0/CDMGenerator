@@ -11,24 +11,45 @@
     {
         public static string GeneratePocoClass(CdmEntityDefinition cdmEntity, CdmManifestDefinition manifest)
         {
-            // Generate property declarations from CdmTypeAttributeDefinitions
-            var properties = cdmEntity.Attributes
-                .Where(attr => attr is CdmTypeAttributeDefinition)
-                .Cast<CdmTypeAttributeDefinition>()
-                .Select(attr => GenerateProperty(attr))
-                .ToArray();
+            List<MemberDeclarationSyntax> properties = new List<MemberDeclarationSyntax>();
 
-            // Prepare the XML comment based on the entity's description
+            // Assuming GenerateProperty is adjusted to return MemberDeclarationSyntax
+            foreach (var attr in cdmEntity.Attributes)
+            {
+                if (attr is CdmTypeAttributeDefinition typeAttr)
+                {
+                    properties.Add(GenerateProperty(typeAttr));
+                }
+                else if (attr is CdmAttributeGroupReference groupRef)
+                {
+                    var attributeGroup = groupRef.ExplicitReference as CdmAttributeGroupDefinition;
+                    if (attributeGroup != null && attributeGroup.Members != null)
+                    {
+                        foreach (var groupAttr in attributeGroup.Members)
+                        {
+                            if (groupAttr is CdmTypeAttributeDefinition groupTypeAttr)
+                            {
+                                properties.Add(GenerateProperty(groupTypeAttr));
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Prepare XML comment based on entity description
             string comment = $"/// <summary>\n/// {cdmEntity.Description ?? "No description available."}\n/// </summary>\n";
 
-            // Create the class declaration with the comment as leading trivia
+            // Create class declaration with properties
             var classDeclaration = SyntaxFactory.ClassDeclaration(cdmEntity.EntityName)
                 .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
-                .AddMembers(properties)
+                .AddMembers(properties.ToArray())
                 .WithLeadingTrivia(SyntaxFactory.ParseLeadingTrivia(comment));
 
-            // Create the namespace declaration
-            var namespaceDeclaration = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName(manifest.ManifestName))
+            // Sanitize ManifestName to create a valid namespace name
+            string sanitizedNamespace = SanitizeNamespace(manifest.ManifestName);
+
+            // Create namespace declaration using the sanitized name
+            var namespaceDeclaration = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName(sanitizedNamespace))
                 .AddMembers(classDeclaration);
 
             // Create the compilation unit (the complete syntax tree)
@@ -39,6 +60,13 @@
 
             return syntaxTree.ToFullString();
         }
+
+        private static string SanitizeNamespace(string namespaceName)
+        {
+            // Replace spaces with underscores and remove other invalid characters as needed
+            return string.Concat(namespaceName.Where(char.IsLetterOrDigit)).Replace(' ', '_');
+        }
+
 
 
         private static MemberDeclarationSyntax GenerateProperty(CdmTypeAttributeDefinition attr)
@@ -67,6 +95,7 @@
             // Simplified check, consider using a more complete list of C# keywords
             return name switch
             {
+                "operator" => true,
                 "class" => true,
                 "int" => true,
                 "string" => true,
@@ -81,22 +110,103 @@
             // This example only handles a few cases for demonstration purposes
             if (attr.DataType != null)
             {
+                //based on meanings.cdm.json
                 switch (attr.DataType.NamedReference?.ToLower())
                 {
-                    case "string":
-                        return "string";
-                    case "int16":
-                    case "int32":
-                        return "int";
-                    case "int64":
-                        return "long";
+                    //BigInteger
+                    case "biginteger":
+                        return "System.Numerics.BigInteger";
+                    //Boolean
                     case "boolean":
-                        return "bool";
+                        return nameof(Boolean);
+                    //DateTime
+                    case "date":
+                    case "time":
+                    case "datetime":
+                        return nameof(DateTime);
+                    //DateTimeOffset
                     case "datetimeoffset":
-                        return "DateTimeOffset";
-                    // Add more cases as necessary
+                        return nameof(DateTimeOffset);
+                    //Decimal
+                    case "basecurrency":
+                    case "currency":
+                    case "decimal":
+                        return nameof(Decimal);
+                    //Double
+                    case "latitude":
+                    case "longitude":
+                    case "double":
+                        return nameof(Double);
+                    //EntityId
+                    case "entityid":
+                        return nameof(Guid);
+                    //Guid
+                    case "guid":
+                        return nameof(Guid);
+                    //Int16
+                    case "int16":
+                        return nameof(Int16);
+                    //Int32
+                    case "age":
+                    case "day":
+                    case "week":
+                    case "tenday":
+                    case "month":
+                    case "quarter":
+                    case "trimester":
+                    case "year":
+                    case "int32":
+                    case "integer":
+                    case "displayOrder":
+                        return nameof(Int32);
+                    //Int64
+                    case "int64":
+                        return nameof(Int64);
+                    //List<Object>
+                    case "list":
+                    case "listlookupcorrelated":
+                    case "listlookupmultiple":
+                    case "listlookup":
+                    case "partylist":
+                        return "System.Collections.Generic.List<Object>";
+                    //String
+                    case "addressline":
+                    case "city":
+                    case "colorname":
+                    case "country":
+                    case "county":
+                    case "governmentId":
+                    case "language":
+                    case "languageTag":
+                    case "localizedDisplayText":
+                    case "localizedDisplayTextMultiple":
+                    case "name":
+                    case "firstname":
+                    case "fullname":
+                    case "gender":
+                    case "ethnicity":
+                    case "maritalStatus":
+                    case "lastname":
+                    case "middlename":
+                    case "postalCode":
+                    case "stateOrProvince":
+                    case "timezone":
+                    case "email":
+                    case "phone":
+                    case "phonecell":
+                    case "phonefax":
+                    case "colorName":
+                    case "string":
+                    case "tickersymbol":
+                    case "url":
+                        return nameof(String);
+                    //Object
+                    case "postalcode":
+                    case "stateorprovince":
+                    case "image":
+                        return nameof(Object);
                     default:
-                        return "object"; // Fallback for unmapped types
+                        return String.Concat(attr.DataType.NamedReference); // Fallback for unmapped types
                 }
             }
             else

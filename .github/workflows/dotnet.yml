@@ -16,6 +16,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+      with:
+        submodules: true 
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
@@ -28,3 +30,5 @@ jobs:
       run: dotnet test --no-build --verbosity normal
     - name: Run Generator on Sample
       run: dotnet run --project CDMGenerator --manifest ./CDMGeneratorTests/sample-data/sample.manifest.cdm.json --outputDirectory generatedOutput
+    - name: Run Generator on nonProfitAccelerator
+      run: dotnet run --project CDMGenerator --schemaRoot ../../../../CDM/schemaDocuments/ --manifestFile manifests/nonProfitAccelerator.manifest.cdm.json --outputDirectory ../../../../output
