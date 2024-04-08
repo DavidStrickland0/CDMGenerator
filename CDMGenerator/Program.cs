@@ -4,9 +4,17 @@ using CDMGenerator;
 using System.Threading.Tasks;
 
 // Define the options
-var manifestOption = new Option<string>(
-    name: "--manifest",
+var rootManifestPath = new Option<string>(
+    name: "--manifestFile",
     description: "The path to the manifest file.")
+{
+    IsRequired = true // Marking the manifest option as required
+};
+
+// Define the options
+var schemaRootDirectory = new Option<string>(
+    name: "--schemaRoot",
+    description: "The root Directory of all schema files.")
 {
     IsRequired = true // Marking the manifest option as required
 };
@@ -19,12 +27,13 @@ var outputDirectoryOption = new Option<string>(
 // Create the command
 var rootCommand = new RootCommand("Application that generates code based on a given manifest.")
 {
-    manifestOption,
+    schemaRootDirectory,
+    rootManifestPath,
     outputDirectoryOption
 };
 
 // Define the handler method
-void ExecuteHandler(string manifest, string outputDirectory)
+void ExecuteHandler(string schemaRoot,string manifest, string outputDirectory)
 {
     var codeCreator = new DotNetSolutionWriter(); // Ensure your actual initialization logic here
     var modelGenerator = new ModelGenerator(p => codeCreator.ProcessFile(manifest ,p , outputDirectory));
@@ -35,7 +44,7 @@ void ExecuteHandler(string manifest, string outputDirectory)
         Console.WriteLine($"Loading {manifest}");
 
         // Example placeholder: Replace with your actual generation logic
-        modelGenerator.Generate(manifest).Wait(); // Adjust based on the actual asynchronous handling in your application
+        modelGenerator.Generate(schemaRoot, manifest).Wait(); // Adjust based on the actual asynchronous handling in your application
     }
     else
     {
@@ -45,10 +54,10 @@ void ExecuteHandler(string manifest, string outputDirectory)
 }
 
 // Set the handler for the command
-rootCommand.SetHandler((string manifest, string outputDirectory) =>
+rootCommand.SetHandler((string schemaRoot, string manifest, string outputDirectory) =>
 {
-    ExecuteHandler(manifest, outputDirectory);
-}, manifestOption, outputDirectoryOption);
+    ExecuteHandler(schemaRoot,manifest, outputDirectory);
+},schemaRootDirectory, rootManifestPath, outputDirectoryOption);
 
 // Execute the command
 return await rootCommand.InvokeAsync(args);

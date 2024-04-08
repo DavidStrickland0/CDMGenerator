@@ -12,6 +12,7 @@ internal class DotNetSolutionWriter
 {
     private bool finalized = false;
     private bool initialized = false;
+    string projectName=String.Empty;
 
     ~DotNetSolutionWriter()
     {
@@ -53,7 +54,7 @@ internal class DotNetSolutionWriter
             var fullyQualifiedName = string.IsNullOrEmpty(namespaceName) ? className : $"{namespaceName}.{className}";
 
             // Convert namespace to directory path
-            var directoryPath = Path.Combine(outputDirectory, namespaceName.Replace(".", Path.DirectorySeparatorChar.ToString()));
+            var directoryPath = Path.Combine(outputDirectory,projectName, namespaceName.Replace(".", Path.DirectorySeparatorChar.ToString()));
             var filePath = Path.Combine(directoryPath, $"{className}.cs");
 
             // Ensure the directory exists
@@ -92,7 +93,7 @@ internal class DotNetSolutionWriter
             // Split into parts by '.'
             var parts = filename.Split('.');
             string version = "1.0.0"; // Default version if no numeric parts are found
-            string projectName = filename;
+            projectName = filename;
 
             // Traverse the parts from the end to find version numbers
             for (int index = parts.Length - 1; index >= 0; index--)

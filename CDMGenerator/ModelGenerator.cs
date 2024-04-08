@@ -17,10 +17,12 @@ namespace CDMGenerator
             this.pocoHandler = pocoHandler; 
         }
 
-        public async Task Generate(string schemaRootPath)
+        public async Task Generate(string schemaRoot, string ManifestFile)
         {
-            ArgumentNullException.ThrowIfNullOrEmpty(schemaRootPath);
-            if (!File.Exists(schemaRootPath)) throw new ArgumentException($"{Path.GetFullPath(schemaRootPath)} does not exist");
+            ArgumentNullException.ThrowIfNull(ManifestFile);
+            var ManifestFilePath = Path.GetFullPath(Path.Combine(schemaRoot, ManifestFile));
+            ArgumentNullException.ThrowIfNullOrEmpty(Path.Combine(schemaRoot,ManifestFilePath));
+            if (!File.Exists(ManifestFilePath)) throw new ArgumentException($"{ManifestFilePath} does not exist");
             string manifestPath = string.Empty;
 
             var cdmCorpus = new CdmCorpusDefinition();
@@ -34,21 +36,21 @@ namespace CDMGenerator
             }, CdmStatusLevel.Warning);
 
             // Storage adapter pointing to the target local manifest location. 
-            cdmCorpus.Storage.Mount("local", new LocalAdapter(Path.GetDirectoryName(schemaRootPath)));
+            cdmCorpus.Storage.Mount("local", new LocalAdapter(Path.GetDirectoryName(schemaRoot)));
             cdmCorpus.Storage.DefaultNamespace = "local";
-            await processManifest(cdmCorpus, schemaRootPath);
+            await processManifest(cdmCorpus, ManifestFile);
 
         }
 
-        private async Task processManifest(CdmCorpusDefinition cdmCorpus, string schemaRootPath)
+        private async Task processManifest(CdmCorpusDefinition cdmCorpus, string manifestPath)
         {
-            Console.WriteLine($"\nLoading manifest {schemaRootPath} ...");
+            Console.WriteLine($"\nLoading manifest {manifestPath} ...");
 
-            CdmManifestDefinition manifest = await cdmCorpus.FetchObjectAsync<CdmManifestDefinition>(Path.GetFileName(schemaRootPath));
+            CdmManifestDefinition manifest = await cdmCorpus.FetchObjectAsync<CdmManifestDefinition>(manifestPath);
 
-            if (manifest == null) throw new ArgumentException($"Unable to load manifest {schemaRootPath}.");
+            if (manifest == null) throw new ArgumentException($"Unable to load manifest {manifestPath}.");
 
-            if (manifest.Entities.Count == 0 && manifest.SubManifests.Count == 0) throw new ArgumentException($"Manifest {schemaRootPath} does not contain Entities or SubManifests.");
+            if (manifest.Entities.Count == 0 && manifest.SubManifests.Count == 0) throw new ArgumentException($"Manifest {manifestPath} does not contain Entities or SubManifests.");
             foreach (var subManifest in manifest.SubManifests)
             {
                 await processManifest(cdmCorpus, cdmCorpus.Storage.CreateAbsoluteCorpusPath(subManifest.Definition, manifest));
