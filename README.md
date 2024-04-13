@@ -1,22 +1,26 @@
 # CDMGenerator
 
-CDMGenerator is an open-source tool designed to generate .NET class libraries based on Microsoft's Common Data Model (CDM) schema. It enables .NET developers to integrate structured data models from CDM into their applications seamlessly.
+CDMGenerator is an open-source tool specifically crafted to generate .NET class libraries from schemas based on Microsoft's Common Data Model (CDM). This powerful utility enables .NET developers to effortlessly incorporate structured data models governed by the CDM into their applications, thus enhancing data interoperability and consistency across diverse systems.
+
+## What is the Common Data Model (CDM)?
+
+The Common Data Model (CDM) is a standardized, extensible data model provided by Microsoft that facilitates data interoperability between applications and services. By adhering to CDM, organizations can ensure their data assets are more comprehensible and usable across various platforms, promoting a unified data environment. The CDM encompasses a broad range of industry-standard definitions of data entities, attributes, and relationships, serving as a foundational schema upon which developers can build detailed, specific data models.
 
 ## Features
 
-- **Generate .NET Class Libraries**: Automatically creates .NET class libraries from CDM schema definitions.
-- **Command Line Interface**: Simple CLI for easy integration and automation within your development workflow.
-- **Support for Microsoft CDM**: Direct support for schemas defined by Microsoft's Common Data Model.
+- **Generate .NET Class Libraries**: CDMGenerator automatically transforms CDM schema definitions into .NET class libraries, streamlining the development process and reducing manual coding errors.
+- **Command Line Interface**: Utilizes a straightforward CLI to seamlessly integrate and automate within your development workflow, making it highly accessible for continuous integration environments.
+- **Support for Microsoft CDM**: Fully supports schemas defined within Microsoft's Common Data Model, ensuring compatibility and ease of integration with other CDM-compliant tools and systems.
 
 ## Prerequisites
 
-Before you begin, ensure you have the following installed:
-- [.NET SDK](https://dotnet.microsoft.com/download) (version recommended by your application requirements)
+Before installation, make sure the following are installed:
+- [.NET SDK](https://dotnet.microsoft.com/download)
 - Git
 
 ## Installation
 
-To get started with CDMGenerator, clone the repository and its submodule. Run these commands:
+Start by cloning the repository and initializing its submodule:
 
 ```bash
 git clone https://github.com/DavidStrickland0/CDMGenerator.git
@@ -26,7 +30,7 @@ git submodule update --init --recursive
 
 ## Usage
 
-To generate a class library from a CDM manifest file, use the following command format:
+Generate a class library from a CDM manifest file with this command:
 
 ```bash
 dotnet run --project CDMGenerator --schemaRoot <path-to-schema-documents> --manifestFile <path-to-manifest-file> --outputDirectory <output-directory>
@@ -34,32 +38,33 @@ dotnet run --project CDMGenerator --schemaRoot <path-to-schema-documents> --mani
 
 ### Example
 
-Generate a library using the default manifest file:
+For instance, to generate a library using a default manifest file:
 
 ```bash
 dotnet run --project CDMGenerator --schemaRoot ./CDM/schemaDocuments/ --manifestFile CustomerInsightsJourneys/default.manifest.cdm.json --outputDirectory generatedOutput
 ```
 
-This command generates a .NET library based on the `default.manifest.cdm.json` file, using the specified schema root as the root of the schema or local namespace in CDM terms. The output is saved to the specified directory.
+This command will produce a .NET library based on the `default.manifest.cdm.json`, leveraging the specified schema documents. The resulting output will be stored in the designated directory.
 
 ## Contributing
 
-Contributions are welcome! Feel free to submit pull requests, create issues, or propose new features.
-
+We encourage contributions! To get involved:
 1. **Fork** the repository on GitHub.
 2. **Clone** the project to your machine.
 3. **Commit** changes to your branch.
 4. **Push** your work back up to your fork.
-5. Submit a **Pull Request** so that we can review your changes
+5. Submit a **Pull Request** so we can review your changes.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+Licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Acknowledgments
 
-- Thanks to Microsoft for providing the Common Data Model which is pivotal to this project.
+- Special thanks to Microsoft for developing the Common Data Model, which plays a crucial role in this project.
 
 ## Contact
 
-For questions or feedback regarding CDMGenerator, please file an issue on our GitHub repository.
+For questions or feedback about CDMGenerator, please open an issue on our GitHub repository.
+
+This expanded README provides a more detailed explanation of the Common Data Model and clearly outlines how the CDMGenerator tool enhances the development process by leveraging the standardization offered by CDM.
