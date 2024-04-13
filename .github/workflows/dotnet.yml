@@ -28,7 +28,5 @@ jobs:
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
-    - name: Run Generator on Sample
-      run: dotnet run --project CDMGenerator --manifest ./CDMGeneratorTests/sample-data/sample.manifest.cdm.json --outputDirectory generatedOutput
     - name: Run Generator on nonProfitAccelerator
       run: dotnet run --project CDMGenerator --schemaRoot ../../../../CDM/schemaDocuments/ --manifestFile manifests/nonProfitAccelerator.manifest.cdm.json --outputDirectory ../../../../output
