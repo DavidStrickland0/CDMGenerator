@@ -21,7 +21,7 @@ internal class DotNetSolutionWriter
     public DotNetSolutionWriter()
     {
     }
-    public void ProcessFile(string manifest, string classCode, string directory)
+    public void ProcessFile(string manifest, CompilationUnitSyntax classCode, string directory)
     {
 
         var outputDirectory = String.IsNullOrEmpty(directory) ? Path.GetTempPath() : directory;
@@ -31,7 +31,7 @@ internal class DotNetSolutionWriter
         }
 
 
-        var syntaxTree = CSharpSyntaxTree.ParseText(classCode);
+        var syntaxTree = CSharpSyntaxTree.ParseText(classCode.ToFullString());
         var root = syntaxTree.GetRoot();
 
         // Find the first class declaration in the code
@@ -50,8 +50,8 @@ internal class DotNetSolutionWriter
             var namespaceName = namespaceDeclaration?.Name.ToString() ?? string.Empty;
             var className = classDeclaration.Identifier.ValueText;
 
-            // Fully qualified name
-            var fullyQualifiedName = string.IsNullOrEmpty(namespaceName) ? className : $"{namespaceName}.{className}";
+            //// Fully qualified name
+            //var fullyQualifiedName = string.IsNullOrEmpty(namespaceName) ? className : $"{namespaceName}.{className}";
 
             // Convert namespace to directory path
             var directoryPath = Path.Combine(outputDirectory,projectName, namespaceName.Replace(".", Path.DirectorySeparatorChar.ToString()));
@@ -61,9 +61,8 @@ internal class DotNetSolutionWriter
             Directory.CreateDirectory(directoryPath);
 
             // Save the class code to the file
-            File.WriteAllText(filePath, classCode);
+            File.WriteAllText(filePath, classCode.ToFullString());
 
-            Console.WriteLine($"Saved {fullyQualifiedName} to {filePath}");
         }
     }
     private void finalize()

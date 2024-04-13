@@ -41,8 +41,6 @@ void ExecuteHandler(string schemaRoot,string manifest, string outputDirectory)
     
     if (String.IsNullOrEmpty(outputDirectory) || Path.Exists(outputDirectory))
     {
-        Console.WriteLine($"Loading {manifest}");
-
         // Example placeholder: Replace with your actual generation logic
         modelGenerator.Generate(schemaRoot, manifest).Wait(); // Adjust based on the actual asynchronous handling in your application
     }

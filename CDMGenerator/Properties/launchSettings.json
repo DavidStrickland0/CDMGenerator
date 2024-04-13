@@ -2,7 +2,7 @@
   "profiles": {
     "CDMGenerator": {
       "commandName": "Project",
-      "commandLineArgs": "--schemaRoot ../../../../CDM/schemaDocuments/ --manifestFile standards.manifest.cdm.json --outputDirectory ../../../../debugOutput"
+      "commandLineArgs": "--schemaRoot ../../../../CDM/schemaDocuments/ --manifestFile  standards.manifest.cdm.json --outputDirectory ../../../../debugOutput"
     }
   }
 }
