@@ -38,7 +38,7 @@ namespace CDMGenerator
             }, CdmStatusLevel.Warning);
 
             // Storage adapter pointing to the target local manifest location. 
-            cdmCorpus.Storage.Mount("local", new LocalAdapter(Path.GetDirectoryName(schemaRoot)));
+            cdmCorpus.Storage.Mount("local", new LocalAdapter(schemaRoot));
             cdmCorpus.Storage.DefaultNamespace = "local";
             Console.WriteLine($"\nLoading manifest {manifestPath} ...");
             await processManifest(cdmCorpus, ManifestFile);

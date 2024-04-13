@@ -224,6 +224,14 @@
                         return nameof(String);
                 }
             }
+            else if(attr.DataFormat!=null)
+            {
+                switch (attr.DataFormat)
+                {
+                    default:
+                        return nameof(String);
+                }
+            }
             else
             {
                 throw new UnknownDataTypeException();

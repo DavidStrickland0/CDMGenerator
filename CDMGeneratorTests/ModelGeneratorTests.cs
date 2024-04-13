@@ -45,7 +45,7 @@ namespace CDMGeneratorTests
             var ObjectUnderTest = new ModelGenerator(p => {
                 System.Diagnostics.Debug.WriteLine(p);
             });
-            string filePath = "../../../CDMGeneratorTests/sample-data/default.manifest.cdm.json";
+            string filePath = "../../../../CDMGeneratorTests/sample-data/sample.manifest.cdm.json";
             string fullPath = Path.GetFullPath(filePath);
             var rootPath = Path.GetDirectoryName(fullPath) ?? string.Empty;
             var fileName = Path.GetFileName(fullPath) ?? string.Empty;
