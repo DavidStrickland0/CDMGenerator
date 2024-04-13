@@ -32,7 +32,7 @@
             {
                 if (attr is CdmTypeAttributeDefinition typeAttr)
                 {
-                    properties.Add(await GenerateProperty(typeAttr));
+                    properties.Add(await GenerateProperty(cdmEntity,typeAttr));
                 }
                 else if (attr is CdmAttributeGroupReference groupRef)
                 {
@@ -43,7 +43,7 @@
                         {
                             if (groupAttr is CdmTypeAttributeDefinition groupTypeAttr)
                             {
-                                properties.Add(await GenerateProperty(groupTypeAttr));
+                                properties.Add(await GenerateProperty(cdmEntity,groupTypeAttr));
                             }
                         }
                     }
@@ -101,15 +101,14 @@
         }
 
 
-        private async static Task<MemberDeclarationSyntax> GenerateProperty(CdmTypeAttributeDefinition attr)
+        private async static Task<MemberDeclarationSyntax> GenerateProperty(CdmEntityDefinition cdmEntity, CdmTypeAttributeDefinition attr)
         {
             // Determine the C# type for the CDM attribute
             string cSharpType = await MapCdmTypeToCSharpType(attr); // Assuming a method that maps CDM data formats to C# types
 
             // Check if attribute name is a C# reserved keyword and prepend with '@' if necessary
             string propertyName = IsCSharpKeyword(attr.Name) ? "@" + attr.Name : attr.Name;
-            var className = attr.Owner.Owner.Owner.FetchObjectDefinitionName();
-            propertyName = propertyName == className ? string.Concat("_",propertyName) : propertyName;
+            propertyName = string.Compare(propertyName,cdmEntity.EntityName,true)==0 ? string.Concat("_",propertyName) : propertyName;
 
             // Prepare the XML comment based on the attribute's description
             string comment = $"/// <summary>\n/// {attr.Description ?? attr.DisplayName ?? "No description available."}\n/// </summary>\n";
@@ -161,7 +160,7 @@
                 {
                     //BigInteger
                     case "biginteger":
-                        return "System.Numerics.BigInteger";
+                        return "global::System.Numerics.BigInteger";
                     //Boolean
                     case "boolean":
                         return nameof(Boolean);
