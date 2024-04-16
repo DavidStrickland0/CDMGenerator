@@ -66,5 +66,3 @@ Licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 ## Contact
 
 For questions or feedback about CDMGenerator, please open an issue on our GitHub repository.
-
-This expanded README provides a more detailed explanation of the Common Data Model and clearly outlines how the CDMGenerator tool enhances the development process by leveraging the standardization offered by CDM.
